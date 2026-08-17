@@ -1,4 +1,3 @@
-// lib/validators.ts
 export const validators = {
   medication: (data: any) => {
     const errors: Record<string, string> = {};
