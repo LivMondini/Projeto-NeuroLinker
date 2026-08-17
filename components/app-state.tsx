@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import type {
   EmergencyContact,
   FamilyMember,
@@ -8,22 +8,22 @@ import type {
   Memory,
   Mood,
   Screen,
-} from "@/lib/types"
+} from "@/lib/types";
 
-const STORAGE_KEY = "neurolinker:state:v1"
+const STORAGE_KEY = "neurolinker:state:v1";
 
 type AppData = {
-  medications: Medication[]
-  memories: Memory[]
-  familyMembers: FamilyMember[]
-  emergencyContact: EmergencyContact
-  patientMood: Mood
-  isOffline: boolean
-  patientName: string
-  patientAge: number
-  patientBio: string
-  patientPhotoUrl: string
-}
+  medications: Medication[];
+  memories: Memory[];
+  familyMembers: FamilyMember[];
+  emergencyContact: EmergencyContact;
+  patientMood: Mood;
+  isOffline: boolean;
+  patientName: string;
+  patientAge: number;
+  patientBio: string;
+  patientPhotoUrl: string;
+};
 
 const initialData: AppData = {
   patientName: "Dona Helena",
@@ -121,68 +121,71 @@ const initialData: AppData = {
   emergencyContact: { name: "Ana (filha)", phone: "(19) 98877-1234" },
   patientMood: "tranquilo",
   isOffline: false,
-}
+};
 
 type AppState = AppData & {
-  ready: boolean
-  screen: Screen
-  setScreen: (screen: Screen) => void
-  toggleMedication: (id: string, taken: boolean) => void
-  addMedication: (med: Omit<Medication, "id" | "taken">) => void
-  updateMedication: (id: string, patch: Partial<Medication>) => void
-  removeMedication: (id: string) => void
-  addMemory: (memory: Omit<Memory, "id">) => void
-  updateMemory: (id: string, patch: Partial<Memory>) => void
-  removeMemory: (id: string) => void
-  addFamilyMember: (member: Omit<FamilyMember, "id">) => void
-  updateFamilyMember: (id: string, patch: Partial<FamilyMember>) => void
-  removeFamilyMember: (id: string) => void
-  setEmergencyContact: (contact: EmergencyContact) => void
-  setPatientMood: (mood: Mood) => void
-  setIsOffline: (offline: boolean) => void
+  ready: boolean;
+  screen: Screen;
+  setScreen: (screen: Screen) => void;
+  toggleMedication: (id: string, taken: boolean) => void;
+  addMedication: (med: Omit<Medication, "id" | "taken">) => void;
+  updateMedication: (id: string, patch: Partial<Medication>) => void;
+  removeMedication: (id: string) => void;
+  addMemory: (memory: Omit<Memory, "id">) => void;
+  updateMemory: (id: string, patch: Partial<Memory>) => void;
+  removeMemory: (id: string) => void;
+  addFamilyMember: (member: Omit<FamilyMember, "id">) => void;
+  updateFamilyMember: (id: string, patch: Partial<FamilyMember>) => void;
+  removeFamilyMember: (id: string) => void;
+  setEmergencyContact: (contact: EmergencyContact) => void;
+  setPatientMood: (mood: Mood) => void;
+  setIsOffline: (offline: boolean) => void;
   setPatientProfile: (
     patch: Partial<
-      Pick<AppData, "patientName" | "patientAge" | "patientBio" | "patientPhotoUrl">
-    >
-  ) => void
-  resetData: () => void
-}
+      Pick<
+        AppData,
+        "patientName" | "patientAge" | "patientBio" | "patientPhotoUrl"
+      >
+    >,
+  ) => void;
+  resetData: () => void;
+};
 
-const AppStateContext = React.createContext<AppState | null>(null)
+const AppStateContext = React.createContext<AppState | null>(null);
 
-const uid = () => Math.random().toString(36).slice(2, 10)
+const uid = () => Math.random().toString(36).slice(2, 10);
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = React.useState<AppData>(initialData)
-  const [screen, setScreen] = React.useState<Screen>("login")
-  const [ready, setReady] = React.useState(false)
+  const [data, setData] = React.useState<AppData>(initialData);
+  const [screen, setScreen] = React.useState<Screen>("login");
+  const [ready, setReady] = React.useState(false);
 
   // Carrega do localStorage no cliente.
   React.useEffect(() => {
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
+      const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as Partial<AppData>
-        setData({ ...initialData, ...parsed })
+        const parsed = JSON.parse(raw) as Partial<AppData>;
+        setData({ ...initialData, ...parsed });
       }
     } catch (error) {
-      console.log("[v0] Falha ao ler estado salvo:", error)
+      console.log("[v0] Falha ao ler estado salvo:", error);
     }
-    setReady(true)
-  }, [])
+    setReady(true);
+  }, []);
 
   // Persiste em cada alteração.
   React.useEffect(() => {
-    if (!ready) return
+    if (!ready) return;
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
-      console.log("[v0] Falha ao salvar estado:", error)
+      console.log("[v0] Falha ao salvar estado:", error);
     }
-  }, [data, ready])
+  }, [data, ready]);
 
   const value = React.useMemo<AppState>(() => {
-    const patch = (updater: (current: AppData) => AppData) => setData(updater)
+    const patch = (updater: (current: AppData) => AppData) => setData(updater);
 
     return {
       ...data,
@@ -193,7 +196,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         patch((c) => ({
           ...c,
           medications: c.medications.map((m) =>
-            m.id === id ? { ...m, taken } : m
+            m.id === id ? { ...m, taken } : m,
           ),
         })),
       addMedication: (med) =>
@@ -205,7 +208,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         patch((c) => ({
           ...c,
           medications: c.medications.map((m) =>
-            m.id === id ? { ...m, ...p } : m
+            m.id === id ? { ...m, ...p } : m,
           ),
         })),
       removeMedication: (id) =>
@@ -237,7 +240,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         patch((c) => ({
           ...c,
           familyMembers: c.familyMembers.map((m) =>
-            m.id === id ? { ...m, ...p } : m
+            m.id === id ? { ...m, ...p } : m,
           ),
         })),
       removeFamilyMember: (id) =>
@@ -251,20 +254,20 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setIsOffline: (offline) => patch((c) => ({ ...c, isOffline: offline })),
       setPatientProfile: (p) => patch((c) => ({ ...c, ...p })),
       resetData: () => setData(initialData),
-    }
-  }, [data, ready, screen])
+    };
+  }, [data, ready, screen]);
 
   return (
     <AppStateContext.Provider value={value}>
       {children}
     </AppStateContext.Provider>
-  )
+  );
 }
 
 export function useAppState() {
-  const context = React.useContext(AppStateContext)
+  const context = React.useContext(AppStateContext);
   if (!context) {
-    throw new Error("useAppState precisa estar dentro de <AppStateProvider>")
+    throw new Error("useAppState precisa estar dentro de <AppStateProvider>");
   }
-  return context
+  return context;
 }
