@@ -1,8 +1,5 @@
 @import "tailwindcss";
-@import "tailwindcss";
-@plugin "tailwindcss-animate"; /* Use @plugin em vez de @import se for o pacote NPM padrão */
 
-/* Mantenha o resto igual */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -117,15 +114,13 @@
   }
 }
 
-/* Acessibilidade: base tipográfica maior na Tela do Idoso */
+/* Acessibilidade */
 .patient-scope {
   font-size: 20px;
   line-height: 1.6;
 }
 
-/* src/app/globals.css */
-
-/* Adicione no final do arquivo */
+/* Responsividade Mobile */
 @media (max-width: 640px) {
   .patient-scope {
     font-size: 18px;
